@@ -1,0 +1,44 @@
+<template>
+  <div class="page page-home" data-name="home">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="title">Prakiraan Cuaca</div>
+      </div>
+    </div>
+
+    <div class="page-content ptr-content" data-ptr-mousewheel="true">
+      <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>
+
+      <div class="block text-align-center initial-loading-preloader">
+        <div class="preloader color-blue"></div>
+        <p class="text-color-gray margin-top">Memuat data cuaca...</p>
+      </div>
+
+      <div class="block-title">Lokasi Saat Ini</div>
+      <div class="list media-list inset no-hairlines" id="location-info-list">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">Desa/Kelurahan:</div>
+                <div class="item-after" id="location-desa">N/A</div>
+              </div>
+              <div class="item-subtitle">Kecamatan: <span id="location-kecamatan">N/A</span></div>
+              <div class="item-text">Kota/Kab: <span id="location-kotkab">N/A</span>, Provinsi: <span id="location-provinsi">N/A</span></div>
+              <div class="item-text">Koordinat: <span id="location-coords">N/A</span>, Timezone: <span id="location-timezone">N/A</span></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="block-title margin-top">Prakiraan Cuaca 3 Harian</div>
+      <div id="weather-forecasts-container"></div>
+
+      <div class="block text-align-center margin-top-half text-color-gray small-text">Sumber Data: BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)</div>
+    </div>
+  </div>
+</template>
