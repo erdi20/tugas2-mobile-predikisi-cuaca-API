@@ -1,12 +1,10 @@
 <template>
   <div class="page page-home" data-name="home">
-    <div class="navbar" style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 0.5px solid rgba(0, 0, 0, 0.08)">
+    <div class="navbar" style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-bottom: 0.5px solid rgba(0, 0, 0, 0.08)">
       <div class="navbar-bg"></div>
       <div class="navbar-inner" style="justify-content: space-between; padding: 0 15px">
         <div class="left" style="color: #333; font-weight: 700; font-size: 20px">Prakiraan Cuaca</div>
-        <div class="right item-title">
-          <div class="" id="bloktglskr"></div>
-        </div>
+        <div class="right" id="bloktglskr" style="font-size: 14px; color: #666; font-weight: 500"></div>
       </div>
     </div>
 
@@ -16,32 +14,47 @@
         <div class="ptr-arrow"></div>
       </div>
 
-      <div class="block-title" style="margin-top: 30px; font-size: 18px; font-weight: 600; color: #333">Lokasi Saat Ini</div>
-      <div class="card" style="border-radius: 12px; margin: 0 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); overflow: hidden">
-        <div class="card-content card-content-padding" style="background: #fff">
-          <div class="list media-list inset no-hairlines" style="margin: 0; padding: 0">
-            <ul>
-              <li class="item-content" style="padding: 0">
-                <div class="item-inner" style="padding: 0">
-                  <!-- <div class="item-title-row display-flex justify-content-space-between">
-                    <div class="item-title" style="font-weight: 600; color: #333; flex: 1">Desa/Kelurahan:</div>
-                    <div class="item-after" id="location-desa" style="color: #007aff; font-weight: 500; flex: 1; text-align: right">N/A</div>
-                  </div> -->
-                  <div class="item-title" style="margin-top: 5px; color: #666">Desa/Kelurahan: <span id="lokasi-desa" style="font-weight: 500">N/A</span></div>
-                  <div class="item-subtitle" style="margin-top: 5px; color: #666">Kecamatan: <span id="lokasi-kecamatan" style="font-weight: 500">N/A</span></div>
-                  <div class="item-text" style="margin-top: 5px; color: #666">Kota/Kab: <span id="lokasi-kotkab" style="font-weight: 500">N/A</span>, Provinsi: <span id="lokasi-provinsi" style="font-weight: 500">N/A</span></div>
-                  <div class="item-text" style="margin-top: 5px; color: #666">Koordinat: <span id="lokasi-coords" style="font-weight: 500">N/A</span>, Timezone: <span id="lokasi-timezone" style="font-weight: 500">N/A</span></div>
-                </div>
-              </li>
-            </ul>
+      <!-- Lokasi Saat Ini -->
+      <div class="block-title" style="margin: 20px 16px 10px; font-size: 18px; font-weight: 600; color: #333">Lokasi Saat Ini</div>
+      
+      <div class="card" style="border-radius: 12px; margin: 0 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: none">
+        <div class="card-content card-content-padding" style="padding: 16px">
+          <div style="margin-bottom: 12px">
+            <div style="color: #666; font-size: 14px">Desa/Kelurahan:</div>
+            <div id="lokasi-desa" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+          </div>
+          
+          <div style="margin-bottom: 12px">
+            <div style="color: #666; font-size: 14px">Kecamatan:</div>
+            <div id="lokasi-kecamatan" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+          </div>
+          
+          <div style="margin-bottom: 12px">
+            <div style="color: #666; font-size: 14px">Kota/Kab, Provinsi:</div>
+            <div id="lokasi-kotkab-provinsi" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+          </div>
+          
+          <div style="margin-bottom: 12px">
+            <div style="color: #666; font-size: 14px">Koordinat:</div>
+            <div id="lokasi-coords" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+          </div>
+          
+          <div>
+            <div style="color: #666; font-size: 14px">Timezone:</div>
+            <div id="lokasi-timezone" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
           </div>
         </div>
       </div>
 
-      <div class="block-title" style="margin-top: 30px; font-size: 18px; font-weight: 600; color: #333">Prakiraan Cuaca 3 Harian</div>
-      <div id="weather-forecasts-container" class="grid grid-cols-1 gap-20" style="padding: 0 15px"></div>
+      <!-- Prakiraan Cuaca -->
+      <div class="block-title" style="margin: 25px 16px 15px; font-size: 18px; font-weight: 600; color: #333">Prakiraan Cuaca 3 Harian</div>
+      
+      <div id="weather-forecasts-container" style="padding: 0 16px"></div>
 
-      <div class="block text-align-center margin-top-half text-color-gray small-text" style="margin-top: 40px; padding-bottom: 20px; font-size: 13px; color: #888">Sumber Data: <a href="https://www.bmkg.go.id/" target="_blank" style="color: #007aff; text-decoration: none; font-weight: 500">BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)</a></div>
+      <!-- Footer -->
+      <div class="block text-align-center" style="margin: 30px 0 20px; font-size: 13px; color: #888">
+        Sumber Data: <span style="color: #007aff; font-weight: 500">BMKG</span>
+      </div>
     </div>
   </div>
 </template>

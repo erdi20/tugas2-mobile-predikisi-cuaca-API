@@ -71,57 +71,62 @@ function ambilDataCuaca(kodeWilayah) {
 }
 
 function tampilkanInfoLokasi(lokasi) {
-  const defaultText = "Tidak Tersedia";
-  $$("#lokasi-desa").text(lokasi?.desa || defaultText);
-  $$("#lokasi-kecamatan").text(lokasi?.kecamatan || defaultText);
-  $$("#lokasi-kotkab").text(lokasi?.kotkab || defaultText);
-  $$("#lokasi-provinsi").text(lokasi?.provinsi || defaultText);
-  $$("#lokasi-coords").text(`Lat: ${lokasi?.lat || defaultText}, Lon: ${lokasi?.lon || defaultText}`);
-  $$("#lokasi-timezone").text(lokasi?.timezone || defaultText);
+  $$("#lokasi-desa").text(lokasi?.desa || "Tidak Tersedia");
+  $$("#lokasi-kecamatan").text(lokasi?.kecamatan || "Tidak Tersedia");
+  $$("#lokasi-kotkab-provinsi").text(`${lokasi?.kotkab || "N/A"}, ${lokasi?.provinsi || "N/A"}`);
+  $$("#lokasi-coords").text(`Lat: ${lokasi?.lat || "N/A"}, Lon: ${lokasi?.lon || "N/A"}`);
+  $$("#lokasi-timezone").text(lokasi?.timezone || "N/A");
 }
 
 function tampilkanPrakiraanCuaca(prakiraanHarian) {
-  const container = $$("#weather-forecasts-container").html(prakiraanHarian.length ? "" : 
-    '<div class="block"><p class="text-align-center text-color-gray">Tidak ada data prakiraan cuaca yang tersedia.</p></div>'
-  );
+  const container = $$("#weather-forecasts-container").html("");
+  const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-  prakiraanHarian.forEach(prakiraanHari => {
+  if (!prakiraanHarian.length) {
+    container.html('<div class="block"><p class="text-align-center text-color-gray">Tidak ada data cuaca</p></div>');
+    return;
+  }
+
+  prakiraanHarian.forEach((hariCuaca) => {
+    if (!hariCuaca[0]?.local_datetime) return;
+
+    const [tanggal] = hariCuaca[0].local_datetime.split(" ");
+    const [tahun, bulanIdx, tgl] = tanggal.split("-");
+    const namaHari = hari[new Date(tahun, bulanIdx - 1, tgl).getDay()];
+    const namaBulan = bulan[parseInt(bulanIdx) - 1];
+
     let html = `
-      <div class="col">
-        <div class="card margin-bottom-half">
-          <div class="card-header no-border">
-            <div class="display-flex justify-content-space-between">
-              <span class="text-color-black font-weight-bold">${formatTanggal(prakiraanHari[0]?.local_datetime)}</span>
-            </div>
-          </div>
-          <div class="card-content card-content-padding">
-            <div class="list media-list no-hairlines"><ul>
+      <div class="card" style="border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05)">
+        <div class="card-header" style="font-weight: 600; font-size: 16px; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05)">
+          ${namaHari}, ${tgl} ${namaBulan} ${tahun}
+        </div>
+        <div class="card-content card-content-padding" style="padding: 0">
     `;
 
-    prakiraanHari.forEach((jam, i) => {
-      // Ambil jam saja dari local_datetime (format: "YYYY-MM-DD HH:MM:SS")
-      const waktu = jam.local_datetime ? jam.local_datetime.split(' ')[1].substring(0,5) : '--:--';
-      
+    hariCuaca.forEach((item, index) => {
+      const waktu = item.local_datetime ? item.local_datetime.split(" ")[1].substring(0, 5) : "--:--";
+
       html += `
-        <li style="${i < prakiraanHari.length - 1 ? 'border-bottom:1px solid #f0f0f0;' : ''}padding:15px;">
-          <div class="item-content">
-            ${jam.image ? `<div class="item-media"><img src="${jam.image}" alt="${jam.weather_desc||'N/A'}" style="width:45px"></div>` : ''}
-            <div class="item-inner">
-              <div class="item-title-row">
-                <div class="item-title">${waktu} WIB</div>
-                <div class="item-after">${jam.t ? jam.t+'°C' : 'N/A'}</div>
-              </div>
-              <div class="item-subtitle">${jam.weather_desc || 'N/A'}</div>
-              <div class="item-text">Kelembapan: ${jam.hu ? jam.hu+'%' : 'N/A'}</div>
-              <div class="item-text">Angin: ${jam.ws ? jam.ws+' km/j' : 'N/A'}</div>
-              <div class="item-text">Jarak Pandang: ${jam.vs_text || 'N/A'}</div>
-            </div>
+        <div style="padding: 12px 16px; ${index < hariCuaca.length - 1 ? "border-bottom: 1px solid rgba(0,0,0,0.05)" : ""}">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px">
+            <span style="font-weight: 500; font-size: 15px">${waktu} WIB</span>
+            <span style="font-weight: 600; font-size: 16px; color: #007aff">${item.t || "--"}°C</span>
           </div>
-        </li>
+          <div style="display: flex; align-items: center; margin-bottom: 6px">
+            ${item.image ? `<img src="${item.image}" alt="${item.weather_desc}" style="width: 24px; height: 24px; margin-right: 8px">` : ""}
+            <span style="font-weight: 500; font-size: 15px">${item.weather_desc || "N/A"}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: #666">
+            <p>Kelembapan:<br> ${item.hu || "--"}%</p>
+            <p>Angin:<br> ${item.ws || "--"} km/j</p>
+            <p> Jarak pandang:<br> ${item.vs_text || "--"}</p>
+          </div>
+        </div>
       `;
     });
 
-    container.append(html + `</ul></div></div></div>`);
+    container.append(html + `</div></div>`);
   });
 }
 
