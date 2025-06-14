@@ -34,7 +34,6 @@ let terjemahanBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "
 
 function formatTanggal(tanggalWaktu) {
   if (!tanggalWaktu) return "Tidak Tersedia";
-
   const date = new Date(tanggalWaktu.replace(" ", "T"));
   const hari = terjemahanHari[date.getDay()];
   const tgl = date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate();
@@ -42,14 +41,6 @@ function formatTanggal(tanggalWaktu) {
   const th = date.getFullYear();
 
   return `${hari}, ${tgl} ${bln} ${th}`;
-}
-
-function formatWaktu(tanggalWaktu) {
-  if (!tanggalWaktu || typeof tanggalWaktu !== "string") {
-    return "Waktu Tidak Tersedia";
-  }
-  const date = new Date(tanggalWaktu.replace(" ", "T"));
-  return isNaN(date.getTime()) ? "Waktu Tidak Tersedia" : date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }) + " WIB";
 }
 
 function ambilDataCuaca(kodeWilayah) {
@@ -81,68 +72,56 @@ function ambilDataCuaca(kodeWilayah) {
 
 function tampilkanInfoLokasi(lokasi) {
   const defaultText = "Tidak Tersedia";
-  $$("#location-desa").text(lokasi?.desa || defaultText);
-  $$("#location-kecamatan").text(lokasi?.kecamatan || defaultText);
-  $$("#location-kotkab").text(lokasi?.kotkab || defaultText);
-  $$("#location-provinsi").text(lokasi?.provinsi || defaultText);
-  $$("#location-coords").text(`Lat: ${lokasi?.lat || defaultText}, Lon: ${lokasi?.lon || defaultText}`);
-  $$("#location-timezone").text(lokasi?.timezone || defaultText);
+  $$("#lokasi-desa").text(lokasi?.desa || defaultText);
+  $$("#lokasi-kecamatan").text(lokasi?.kecamatan || defaultText);
+  $$("#lokasi-kotkab").text(lokasi?.kotkab || defaultText);
+  $$("#lokasi-provinsi").text(lokasi?.provinsi || defaultText);
+  $$("#lokasi-coords").text(`Lat: ${lokasi?.lat || defaultText}, Lon: ${lokasi?.lon || defaultText}`);
+  $$("#lokasi-timezone").text(lokasi?.timezone || defaultText);
 }
 
-function tampilkanPrakiraanCuaca(prakiraanHarian, tanggalAnalisis) {
-  const container = $$("#weather-forecasts-container").html("");
+function tampilkanPrakiraanCuaca(prakiraanHarian) {
+  const container = $$("#weather-forecasts-container").html(prakiraanHarian.length ? "" : 
+    '<div class="block"><p class="text-align-center text-color-gray">Tidak ada data prakiraan cuaca yang tersedia.</p></div>'
+  );
 
-  if (!prakiraanHarian.length) {
-    container.html('<div class="block"><p class="text-align-center text-color-gray">Tidak ada data prakiraan cuaca yang tersedia.</p></div>');
-    return;
-  }
-
-  prakiraanHarian.forEach(function (prakiraanHari) {
-    const formattedDate = formatTanggal(prakiraanHari[0]?.local_datetime);
-    const updateTime = formatWaktu(tanggalAnalisis);
-
-    let dailyCardHtml = `
+  prakiraanHarian.forEach(prakiraanHari => {
+    let html = `
       <div class="col">
-        <div class="card margin-bottom-half"> <div class="card-header no-border">
+        <div class="card margin-bottom-half">
+          <div class="card-header no-border">
             <div class="display-flex justify-content-space-between">
-              <span class="text-color-black font-weight-bold">${formattedDate}</span>
+              <span class="text-color-black font-weight-bold">${formatTanggal(prakiraanHari[0]?.local_datetime)}</span>
             </div>
           </div>
           <div class="card-content card-content-padding">
-            <div class="list media-list no-hairlines"> <ul>
+            <div class="list media-list no-hairlines"><ul>
     `;
 
-    prakiraanHari.forEach(function (prakiraanJam, index) {
-      const localTime = formatWaktu(prakiraanJam.local_datetime);
-      const weatherDesc = prakiraanJam.weather_desc || "N/A";
-      const temperature = prakiraanJam.t ? `${prakiraanJam.t}°C` : "N/A";
-      const humidity = prakiraanJam.hu ? `${prakiraanJam.hu}%` : "N/A";
-      const windSpeed = prakiraanJam.ws ? `${prakiraanJam.ws} km/j` : "N/A";
-      const visibility = prakiraanJam.vs_text || "N/A";
-      const imageUrl = prakiraanJam.image;
-      const itemBorderStyle = index < prakiraanHari.length - 1 ? "border-bottom: 1px solid #f0f0f0;" : "";
-
-      dailyCardHtml += `
-        <li style="${itemBorderStyle} padding: 15px;">
+    prakiraanHari.forEach((jam, i) => {
+      // Ambil jam saja dari local_datetime (format: "YYYY-MM-DD HH:MM:SS")
+      const waktu = jam.local_datetime ? jam.local_datetime.split(' ')[1].substring(0,5) : '--:--';
+      
+      html += `
+        <li style="${i < prakiraanHari.length - 1 ? 'border-bottom:1px solid #f0f0f0;' : ''}padding:15px;">
           <div class="item-content">
-            <div class="item-media">${imageUrl ? `<img src="${imageUrl}" alt="${weatherDesc}" class="weather-icon" style="width: 45px;" />` : ""}</div>
+            ${jam.image ? `<div class="item-media"><img src="${jam.image}" alt="${jam.weather_desc||'N/A'}" style="width:45px"></div>` : ''}
             <div class="item-inner">
               <div class="item-title-row">
-                <div class="item-title">${localTime}</div>
-                <div class="item-after">${temperature}</div>
+                <div class="item-title">${waktu} WIB</div>
+                <div class="item-after">${jam.t ? jam.t+'°C' : 'N/A'}</div>
               </div>
-              <div class="item-subtitle">${weatherDesc}</div>
-              <div class="item-text">Kelembapan: ${humidity} </div>
-              <div class="item-text">Angin: ${windSpeed} </div>
-              <div class="item-text">Jarak Pandang: ${visibility}</div>
+              <div class="item-subtitle">${jam.weather_desc || 'N/A'}</div>
+              <div class="item-text">Kelembapan: ${jam.hu ? jam.hu+'%' : 'N/A'}</div>
+              <div class="item-text">Angin: ${jam.ws ? jam.ws+' km/j' : 'N/A'}</div>
+              <div class="item-text">Jarak Pandang: ${jam.vs_text || 'N/A'}</div>
             </div>
           </div>
         </li>
       `;
     });
 
-    dailyCardHtml += `</ul></div></div></div>`;
-    container.append(dailyCardHtml);
+    container.append(html + `</ul></div></div></div>`);
   });
 }
 
