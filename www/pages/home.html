@@ -8,53 +8,59 @@
       </div>
     </div>
 
-    <div class="page-content ptr-content" data-ptr-mousewheel="true">
-      <div class="ptr-preloader">
-        <div class="preloader"></div>
-        <div class="ptr-arrow"></div>
-      </div>
+    <div class="page-content" data-ptr-mousewheel="true">
+      <div style="margin: 16px; padding: 16px; background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border-radius: 16px; color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)">
+        <div style="display: flex; align-items: center; margin-bottom: 12px">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600">Informasi Lokasi</h2>
+        </div>
 
-      <!-- Lokasi Saat Ini -->
-      <div class="block-title" style="margin: 20px 16px 10px; font-size: 18px; font-weight: 600; color: #333">Lokasi Saat Ini</div>
-      
-      <div class="card" style="border-radius: 12px; margin: 0 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: none">
-        <div class="card-content card-content-padding" style="padding: 16px">
-          <div style="margin-bottom: 12px">
-            <div style="color: #666; font-size: 14px">Desa/Kelurahan:</div>
-            <div id="lokasi-desa" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Desa</div>
+            <div id="lokasi-desa" style="font-weight: 600; font-size: 15px">-</div>
           </div>
-          
-          <div style="margin-bottom: 12px">
-            <div style="color: #666; font-size: 14px">Kecamatan:</div>
-            <div id="lokasi-kecamatan" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Kecamatan</div>
+            <div id="lokasi-kecamatan" style="font-weight: 600; font-size: 15px">-</div>
           </div>
-          
-          <div style="margin-bottom: 12px">
-            <div style="color: #666; font-size: 14px">Kota/Kab, Provinsi:</div>
-            <div id="lokasi-kotkab-provinsi" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Kabupaten</div>
+            <div id="lokasi-kotkab" style="font-weight: 600; font-size: 15px">-</div>
           </div>
-          
-          <div style="margin-bottom: 12px">
-            <div style="color: #666; font-size: 14px">Koordinat:</div>
-            <div id="lokasi-coords" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Provinsi</div>
+            <div id="lokasi-provinsi" style="font-weight: 600; font-size: 15px">-</div>
           </div>
-          
-          <div>
-            <div style="color: #666; font-size: 14px">Timezone:</div>
-            <div id="lokasi-timezone" style="font-weight: 500; font-size: 16px; color: #333">N/A</div>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; justify-content: space-between">
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px; flex: 1; margin-right: 8px">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Koordinat</div>
+            <div id="lokasi-coords" style="font-weight: 600; font-size: 13px">-</div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px; flex: 1">
+            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px">Zona Waktu</div>
+            <div id="lokasi-timezone" style="font-weight: 600; font-size: 13px">-</div>
           </div>
         </div>
       </div>
 
-      <!-- Prakiraan Cuaca -->
       <div class="block-title" style="margin: 25px 16px 15px; font-size: 18px; font-weight: 600; color: #333">Prakiraan Cuaca 3 Harian</div>
-      
-      <div id="weather-forecasts-container" style="padding: 0 16px"></div>
 
-      <!-- Footer -->
-      <div class="block text-align-center" style="margin: 30px 0 20px; font-size: 13px; color: #888">
-        Sumber Data: <span style="color: #007aff; font-weight: 500">BMKG</span>
-      </div>
+      <div id="blokcuaca" style="padding: 0 16px"></div>
     </div>
   </div>
 </template>
+
+<script>
+  export default function (props, ctx) {
+    let $on = ctx.$on;
+    $on("pageInit", () => {
+      tampilCuaca();
+    });
+    return $render;
+  }
+</script>
